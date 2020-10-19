@@ -6,6 +6,10 @@ class HashTable:
         self.data = [""] * self.capacity
         self.size = 0
 
+    # initial_hash_function
+    # input : key - String
+    # output : suma % self.capacity - int
+    # effect : it returns the hash value of the string 'key'
     def initial_hash_function(self, key):
         suma = 0
         for charx in key:
@@ -13,9 +17,9 @@ class HashTable:
         return suma % self.capacity
 
     # add
-    # input : pair - Pair()
+    # input : key - String
     # output : None
-    # effect : it adds the pair 'pair' in the hashtable
+    # effect : it adds the string 'key' in the hashtable
     def add(self, key):
         if self.size / self.capacity > 0.7:
             self.capacity = self.capacity * 2
@@ -34,10 +38,10 @@ class HashTable:
         self.data[index] = key
         self.size += 1
 
-    # add
-    # input : pair - Pair()
-    # output : None
-    # effect : it adds the pair 'pair' in the hashtable
+    # lookup
+    # input : key - String
+    # output : index - int
+    # effect : returns the index of the string 'key' from the hashtable
     def lookup(self, key):
         index = self.initial_hash_function(key)
         while index < self.capacity and self.data[index] != key:
