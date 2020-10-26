@@ -142,9 +142,11 @@ class Main:
                     self._pif.append((token, self._symbolTable.add(token)))
                 else:
                     self._errors.append("Lexical error at line " + str(k) + " at token :" + token)
-
+        print("symbol table:")
         print(self._symbolTable)
+        print("program internal form:")
         print(self._pif)
+        print("lexical errors")
         print(self._errors)
 
 m =Main("problem1.in", "token.in")
