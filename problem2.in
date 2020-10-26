@@ -1,0 +1,14 @@
+Int main()
+	{
+		Int a.
+		Int i.
+		a= ReadLine().
+		For(i = 2. (i < (a / 2)) i = (i + 1).){
+			If ((a % i) == 0) 	{
+				Write (a + " is not prime").
+				Return 0.
+				}.
+		}.
+		Write (a + "is prime").
+		Return 0.
+	}.

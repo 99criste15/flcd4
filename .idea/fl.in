@@ -1,0 +1,202 @@
+Minilanguage specifications
+Lexix.txt
+	Alphabet
+		Upper (A-Z) and lower case letters (a-z) of the English alphabet
+		Special characters '_'
+        Decimal digits (0-9)
+	Lexic
+    Special symbols, representing:
+         - operators + - * / == = < > <= >= && || ! % //
+        - bitwise operators: >> << ~ & | ^
+        - separators [] {} . space ,
+        - literals: true false
+        - reserved words:
+            if else while for function boolean int char double writeLine readLine return
+    identifiers - a sequence of letters and digits such that the first character is a letter;
+        identifier = letter{letter | digit}
+        letter = "a" | "b" | "c" | ... | "z" | "A" | "B" | ... | "Z"
+        digit = "0" | "1" | ... | "9"
+    constants
+        integer
+            - every number can be either positive or negative or unsigned - any number of more than one digit can't start with 0 and 0 is always unsigned
+            IntNum = "0" | ["+"|"-"] nzDigit {"0" | nzDigit}.
+            nzDigit = "1" | "2" | ... | "9".
+        double
+            - every double number can be either positive or negative or unsigned
+            double = “0” | ["+"|"-"] "0," UnsignedNum | ["+"|"-"] UnsignedNum "," UnsignedNum
+            UnsignedNum = = "0" | nzDigit {"0" | nzDigit}.
+        char
+            - a character is formed either by a digit or by a letter or by a special character
+            character = “’” letter ”’” | “’” digit “’”  | “’” special_characters “’”
+            special_characters= "_"| “,” | “.” | “@” | “#” | “<” | “>” | “=” |”%” |”$” |”^” |”&”| ”*”| ”(”| ”)” | ”[” | ”]” | ”{” | ”}” | ”:” | ”;” | ””” | ”’” | ”|” | ”+” | ”-” | ”/” | ”*” | ”~” | ”\” | ”`”
+        string
+            -a string is a sequence of zero or more characters (this include the null string)
+            string_const = “””{character} “””
+
+
+
+
+
+Token.in:
+    main – 0
+    int - 1
+    char - 2
+    double - 3
+    string – 4
+    if – 5
+    else – 6
+    while – 7
+    for – 8
+    function – 9
+    writeLine – 10
+    readLine – 11
+    +  –  12
+    - – 13
+    * – 14
+    / – 15
+    ! –  16
+    = – 17
+    == –  18
+    < – 19
+    > – 20
+    <= –  21
+    >= – 22
+    >> – 23
+    << – 24
+    ~ – 25
+    & – 26
+    | – 27
+    ^ – 28
+    && – 29
+    || – 30
+    _ – 31
+    true – 32
+    false – 33
+    [ – 34
+    ] – 35
+    { – 36
+    } – 37
+    ; – 38
+    : – 39
+    space – 40
+    . – 41
+
+
+
+
+
+
+
+
+
+
+
+Syntax.in:
+Syntax:
+    The strings are specified between " and "
+    A character is specified between ' and '
+    A constant is either a string a, a character, an int, a double or a boolean
+        constant = IntNum | character | string_const | boolean_values
+Program rules:
+    program = type “main” “(” “)” statements_block “.”
+    type1 = "boolean" | "int" | "double" | "char"
+    array = type1 "[" UnsignedNum "]"
+    type = type1 | array
+    statements_block = "{" stmt_list "}"
+    stmt_list = { stmt }
+    stmt = assign_stmt | declaration_stmt | IO_stmt | if_stmt | while_stmt | for_stmt | return_stmt
+    assign_stmt = identifier "=" expression "."
+    declaration_stmt = type identifier "." | type identifier “=” constant “.”
+    IO_stmt = identifier “=” "readLine" "(" ")" "." | "writeLine" expression "."
+    if_stmt = "if" condition statements_block ["else" statements_block] “.”
+    while_stmt = "while" condition statements_block “.”
+    for_stmt = “for” “(” assign_stmt condition assign_stmt “)” statements_block “.”
+    return_stmt = "return" factor "."
+
+    expression = "(" mathematical_expression ")" | "(" boolean_expression ")" | "(" bitwise_expression ")"
+    condition = “(” boolean_expression “)”
+    mathematical_expression = factor mathematical_operator factor | factor
+    boolean_expression = factor binary_logic_relation factor | factor comparison_operators factor | “!” factor | factor
+    mathematical_oerator = “+” | “-” | “*” | “/” | "%"
+    bitwise_operators = “<<” | “>>” | “|” | “&”
+    bitwise_expression = factor bitwise_operators factor |  “~” factor
+    comparison_operators = "<" | "<=" | "==" | ">" | ">="
+    binary_logic_relation =  “&&” | ”||”
+    boolean_values = “true”|”false”
+    factor = expression | identifier | constant | identifier “[” mathematical_expression “]”
+
+
+
+
+
+
+
+
+
+Problem1. Maximum of 3 numbers.
+
+Int main()
+	{
+		Int a.
+        Int b.
+        Int c.
+        a = ReadLine().
+        b = ReadLine().
+        c = ReadLine().
+        If ( (a >= b) && (a >= c)) {Write (a + “is the biggest number”).}.
+        If ( (b >= a) && (b >= c)) {Write (b + “is the biggest number”).}.
+        If ( (c >= a) && (c >= b)) {Write (c + “is the biggest number”).}.
+        Return 0.
+
+	}.
+
+Problem2. Check if number is prime.
+
+Int main()
+	{
+		Int a.
+		Int i.
+		a= ReadLine().
+		For(i = 2. (i < (a / 2)) i = (i + 1).){
+			If ((a % i) == 0) 	{
+				Write (a + “ is not prime”).
+				Return 0.
+				}.
+		}.
+		Write (a + “is prime”).
+		Return 0.
+	}.
+Problem3. Compute the Min/Max of multiple numbers.
+Int main()
+	{
+		Int a.
+		Int min.
+		Int max.
+
+		Int n.
+		n=ReadLine().
+		min = ReadLine().
+		max = min.
+		For(Int i = 2. (i <= n) i = (i + 1).){
+			a= ReadLine().
+			If (min > a) { min = a.}.
+			If (max < a) { max = a.}.
+			}.
+		Write (min + “ is the minimum number. \n”).
+		Write (max + “ is the maximum number. \n”).
+		Return 0.
+	}.
+
+Problem 1.Error Write a program with 2 lexical errors.
+Error 1 : variable starts with digit : 1j
+Error 2 : String quotes are not closed : "True
+Int main()
+	{
+		Int 1j.
+		1j = ReadLine().
+		If (1j == 0) {Write (“True).}.
+		Else {Write(“False”).}.
+		Return 0.
+	}.
+
+

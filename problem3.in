@@ -1,0 +1,19 @@
+Int main()
+	{
+		Int a.
+		Int min.
+		Int max.
+
+		Int n.
+		n=ReadLine().
+		min = ReadLine().
+		max = min.
+		For(Int i = 2. (i <= n) i = (i + 1).){
+			a= ReadLine().
+			If (min > a) { min = a.}.
+			If (max < a) { max = a.}.
+			}.
+		Write (min + " is the minimum number. \n").
+		Write (max + " is the maximum number. \n").
+		Return 0.
+	}.

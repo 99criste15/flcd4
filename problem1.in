@@ -1,0 +1,14 @@
+int main()
+	{
+		int a.
+        int b.
+        int c.
+        a = readLine().
+        b = readLine().
+        c = readLine().
+        if ( (a >= b) && (a >= c)) {write (a +  " is the biggest number ").}.
+        if ( (b >= a) && (b >= c)) {write (b +  "is the biggest number ").}.
+        if ( (c >= a) && (c >= b)) {write (c +  "is the biggest number ").}.
+        return 0.
+
+	}.
