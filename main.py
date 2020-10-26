@@ -70,76 +70,82 @@ class HashTable:
         return result
 
 
-tokens = []
-beforeMinus=["==","=","+","-","*","/",">","<","<=",">=","%"]
-f = open("error.in", "r", encoding="utf8")
-d = open("token.in", "r", encoding="utf8")
-for line in d.readlines():
-    tokens.append(line.split("#")[0])
+class Main:
+    def __init__(self, file1, file2):
+        self._f = open(file1, "r", encoding="utf8")
+        self._d = open(file2, "r", encoding="utf8")
 
-lines = f.readlines()
-program = []
-pif = []
-errors = []
-symbolTable = HashTable()
-lastToken = ""
-for k in range(len(lines)):
-    line = lines[k]
-    quotesNr = 0
-    newLine = ""
-    for i in range(len(line)):
-        ch = line[i]
-        if line[i] == ' ' and quotesNr % 2 != 0:
-            ch = "#space#"
-        if line[i] == '\n' and quotesNr % 2 != 0:
-            ch = "#enter#"
-        if line[i] == '\t' and quotesNr % 2 != 0:
-            ch = "#tab#"
-        if line[i] == '"':
-            quotesNr += 1
-            if (quotesNr % 2 == 1):
-                if newLine.rfind('"') == -1:
-                    for i in range(len(tokens)):
-                        newLine = newLine.replace(tokens[i], ' #' + str(i) + '# ')
+        self._tokens = []
+        for line in self._d.readlines():
+            self._tokens.append(line.split("#")[0])
+        self._pif = []
+        self._errors = []
+        self._symbolTable = HashTable()
+
+    def scan(self):
+        lines = self._f.readlines()
+        beforeMinus = ["==", "=", "+", "-", "*", "/", ">", "<", "<=", ">=", "%"]
+        lastToken = ""
+        for k in range(len(lines)):
+            line = lines[k]
+            quotesNr = 0
+            newLine = ""
+            for i in range(len(line)):
+                ch = line[i]
+                if line[i] == ' ' and quotesNr % 2 != 0:
+                    ch = "#space#"
+                if line[i] == '\n' and quotesNr % 2 != 0:
+                    ch = "#enter#"
+                if line[i] == '\t' and quotesNr % 2 != 0:
+                    ch = "#tab#"
+                if line[i] == '"':
+                    quotesNr += 1
+                    if (quotesNr % 2 == 1):
+                        if newLine.rfind('"') == -1:
+                            for i in range(len(self._tokens)):
+                                newLine = newLine.replace(self._tokens[i], ' #' + str(i) + '# ')
+                        else:
+                            lastSubstring = newLine[newLine.rfind('"') + 1:]
+                            for i in range(len(self._tokens)):
+                                lastSubstring = lastSubstring.replace(self._tokens[i], ' #' + str(i) + '# ')
+                            newLine = newLine[:newLine.rfind('"') + 1] + lastSubstring
+                newLine += ch
+            if newLine.rfind('"') == -1:
+                for i in range(len(self._tokens)):
+                    newLine = newLine.replace(self._tokens[i], ' #' + str(i) + '# ')
+            elif quotesNr % 2 == 0:
+                lastSubstring = newLine[newLine.rfind('"') + 1:]
+                for i in range(len(self._tokens)):
+                    lastSubstring = lastSubstring.replace(self._tokens[i], ' #' + str(i) + '# ')
+                newLine = newLine[:newLine.rfind('"') + 1] + lastSubstring
+            line = newLine
+            for i in range(len(self._tokens)):
+                line = line.replace('#' + str(i) + '#', self._tokens[i])
+            x = re.split('\s', line)
+
+            x = list(filter(None, x))
+            for i in range(len(x)):
+                token = x[i]
+                if lastToken != "":
+                    token = lastToken + token
+                    lastToken = ""
+                if (token == "-" and (x[i - 1] in beforeMinus)):
+                    lastToken = token
+                    continue
+
+                token = token.replace("#space#", " ")
+                token = token.replace("#tab#", "\t")
+                token = token.replace("#enter#", "\n")
+                if token.lower() in self._tokens:
+                    self._pif.append((token, -1))
+                elif re.findall('^[a-zA-Z_]\w*$|^".*"$|^[-]{0,1}[0-9]\d*$|^[-]{0,1}[0-9]\d*,\d*$|^0$|^\'.\'$', token):
+                    self._pif.append((token, self._symbolTable.add(token)))
                 else:
-                    lastSubstring = newLine[newLine.rfind('"') + 1:]
-                    for i in range(len(tokens)):
-                        lastSubstring = lastSubstring.replace(tokens[i], ' #' + str(i) + '# ')
-                    newLine = newLine[:newLine.rfind('"') + 1] + lastSubstring
-        newLine += ch
-    if newLine.rfind('"') == -1:
-        for i in range(len(tokens)):
-            newLine = newLine.replace(tokens[i], ' #' + str(i) + '# ')
-    elif quotesNr % 2 == 0:
-        lastSubstring = newLine[newLine.rfind('"') + 1:]
-        for i in range(len(tokens)):
-            lastSubstring = lastSubstring.replace(tokens[i], ' #' + str(i) + '# ')
-        newLine = newLine[:newLine.rfind('"') + 1] + lastSubstring
-    line = newLine
-    for i in range(len(tokens)):
-        line = line.replace('#' + str(i) + '#', tokens[i])
-    x = re.split('\s', line)
+                    self._errors.append("Lexical error at line " + str(k) + " at token :" + token)
 
-    x = list(filter(None, x))
-    for i in range(len(x)):
-        token = x[i]
-        if lastToken!="":
-            token = lastToken+token
-            lastToken = ""
-        if (token == "-" and (x[i-1] in beforeMinus)):
-            lastToken = token
-            continue
+        print(self._symbolTable)
+        print(self._pif)
+        print(self._errors)
 
-        token = token.replace("#space#", " ")
-        token = token.replace("#tab#", "\t")
-        token = token.replace("#enter#", "\n")
-        if token.lower() in tokens:
-            pif.append((token, -1))
-        elif re.findall('^[a-zA-Z_]\w*$|^".*"$|^[-]{0,1}[0-9]\d*$|^[-]{0,1}[0-9]\d*,\d*$|^0$|^\'.\'$', token):
-            pif.append((token, symbolTable.add(token)))
-        else:
-            errors.append("Lexical error at line " + str(k) + " at token :" + token)
-
-print(symbolTable)
-print(pif)
-print(errors)
+m =Main("problem1.in", "token.in")
+m.scan()

@@ -1,7 +1,6 @@
 int main()
 	{
 		int j.
-		'b'
 		j = readLine().
 		if (j == -7) {write ("True).}.
 		else {write("False").}.
