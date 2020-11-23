@@ -23,9 +23,9 @@ class Grammar:
     def __init__(self, fileIn):
         f = open(fileIn, "r")
         lines = f.readlines()
-        self._Q = lines[0].split("\n")[0].split(" ")
+        self._N = lines[0].split("\n")[0].split(" ")
         self._E = lines[1].split("\n")[0].split(" ")
-        self._q0 = lines[2].split("\n")[0]
+        self._S = lines[2].split("\n")[0]
         self._table = {}
 
         for line in lines[3:]:
@@ -58,25 +58,25 @@ class Grammar:
             print(menu)
             option = int(input())
             if option == 1:
-                print("Q = " + Grammar.printState(self._Q))
+                print("N = " + Grammar.printState(self._N))
             elif option == 2:
                 print("E = " + Grammar.printState(self._E))
             elif option == 3:
                 print("P = " + self.printProductions())
-            elif option ==4 :
+            elif option == 4:
                 print("P = " + self.printProductionsForNonTerminal())
             elif option == 5:
-                print("S = " + self._q0)
+                print("S = " + self._S)
 
 
 
     def printProductionsForNonTerminal(self):
         nonTerminal = input("give a nonterminal\n")
-        if nonTerminal in self._Q:
+        if nonTerminal in self._N:
             return self.printNonTerminalProductions(nonTerminal)
         return ""
 
 
-main = Grammar("myGrammar.in")
+main = Grammar("grammar.in")
 main.main()
 
