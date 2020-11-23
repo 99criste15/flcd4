@@ -1,5 +1,5 @@
 import re
-
+import fa
 
 class HashTable:
 
@@ -75,6 +75,8 @@ class Main:
         self._f = open(file1, "r", encoding="utf8")
         self._d = open(file2, "r", encoding="utf8")
 
+        self._FaIntegers = fa.FA("integers.in")
+        self._FaIdentifiers = fa.FA("identifier.in")
         self._tokens = []
         for line in self._d.readlines():
             self._tokens.append(line.split("#")[0])
@@ -138,7 +140,8 @@ class Main:
                 token = token.replace("#enter#", "\n")
                 if token.lower() in self._tokens:
                     self._pif.append((token, -1))
-                elif re.findall('^[a-zA-Z_]\w*$|^".*"$|^[-]{0,1}[0-9]\d*$|^[-]{0,1}[0-9]\d*,\d*$|^0$|^\'.\'$', token):
+                elif self._FaIdentifiers.isAccepted(token) or self._FaIntegers.isAccepted(token) or re.findall(
+                        '^".*"$|^[-]?[0-9]\d*,\d*$|^0$|^\'.\'$', token):
                     self._pif.append((token, self._symbolTable.add(token)))
                 else:
                     self._errors.append("Lexical error at line " + str(k) + " at token :" + token)
@@ -149,5 +152,5 @@ class Main:
         print("lexical errors")
         print(self._errors)
 
-m =Main("problem1.in", "token.in")
+m =Main("error.in", "token.in")
 m.scan()

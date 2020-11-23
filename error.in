@@ -1,8 +1,9 @@
 int main()
 	{
-		int j.
-		j = readLine().
-		if (j == -7) {write ("True).}.
-		else {write("False").}.
+		int 1j.
+		1j = readLine().
+		if (j == 0) {write ("True).}.
+		else {write(#).}.
+		write 'aa'.
 		return 0.
 	}.

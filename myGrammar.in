@@ -1,0 +1,28 @@
+Program type type1 array statements_block stmt_list stmt assign_stmt declaration_stmt UnsignedNum IO_stmt if_stmt while_stmt for_stmt return_stmt expression identifier constant condition factor operator mathematical_expression binary_logic_relation mathematical_operator boolean_expression bitwise_expression comparison_operators bitwise_operator boolean_values
+main ( ) . boolean int double char [ ] { } = for while else if ~ && || + - / * == <= >= > < true false << >> | % & ! readLine writeLine " '
+Program
+Program->type main ( ) statements_block .
+type->type1|array
+array->type1 [ UnsignedNum ]
+type1->int|char|double|boolean
+statements_block->{ stmt_list }
+stmt_list->stmt|e
+stmt->assign_stmt|declaration_stmt|IO_stmt|if_stmt|while_stmt|for_stmt|return_stmt
+assign_stmt->identifier = expression .
+declaration_stmt->type identifier .|type identifier = constant .
+IO_stmt->identifier = readLine ( ) .|writeLine expression .
+if_stmt->if condition statements_block|if condition statements_block else statements_block .
+while_stmt->while condition statements_block .
+for_stmt->for ( assign_stmt condition assign_stmt ) statements_block .
+return_stmt->return factor .
+expression->( mathematical_expression )|condition|( bitwise_expression )
+condition->( boolean_expression )
+mathematical_expression->factor mathematical_operator factor|factor
+boolean_expression->factor binary_logic_relation factor|factor comparison_operators factor|! boolean_expression|boolean_values
+mathematical_operator->+|-|*|/|%
+bitwise_operator-><<|>>|bar|&
+bitwise_expression->factor bitwise_operator factor|~ factor
+comparison_operators-><|<=|==|>|>=
+binary_logic_relation->&&|bar bar
+boolean_values->true|false
+factor->expression|identifier|constant|identifier [ mathematical_expression ]

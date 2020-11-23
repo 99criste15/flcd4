@@ -14,7 +14,7 @@ Lexix.txt
             if else while for function boolean int char double writeLine readLine return
     identifiers - a sequence of letters and digits such that the first character is a letter;
         identifier = letter{letter | digit}
-        letter = "a" | "b" | "c" | ... | "z" | "A" | "B" | ... | "Z"
+        letter = "a" | "b" | "c" | ... | "z" | "A" | "B" | ... | "Z" | "_"
         digit = "0" | "1" | ... | "9"
     constants
         integer
@@ -28,7 +28,7 @@ Lexix.txt
         char
             - a character is formed either by a digit or by a letter or by a special character
             character = “’” letter ”’” | “’” digit “’”  | “’” special_characters “’”
-            special_characters= "_"| “,” | “.” | “@” | “#” | “<” | “>” | “=” |”%” |”$” |”^” |”&”| ”*”| ”(”| ”)” | ”[” | ”]” | ”{” | ”}” | ”:” | ”;” | ””” | ”’” | ”|” | ”+” | ”-” | ”/” | ”*” | ”~” | ”\” | ”`”
+            special_characters= "_"| “,” | “.” | “@” | “<” | “>” | “=” |”%” |”$” |”^” |”&”| ”*”| ”(”| ”)” | ”[” | ”]” | ”{” | ”}” | ”:” | ”;” | ””” | ”’” | ”|” | ”+” | ”-” | ”/” | ”*” | ”~” | ”\” | ”`”
         string
             -a string is a sequence of zero or more characters (this include the null string)
             string_const = “””{character} “””
