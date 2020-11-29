@@ -1,5 +1,7 @@
 import re
 import fa
+from grammar import *
+
 
 class HashTable:
 
@@ -7,6 +9,7 @@ class HashTable:
         self._capacity = initial_size
         self._data = [""] * self._capacity
         self._size = 0
+        self._grammar = Grammar("myGrammar.in")
 
     # initial_hash_function
     # input : key - String
@@ -131,7 +134,7 @@ class Main:
                 if lastToken != "":
                     token = lastToken + token
                     lastToken = ""
-                if (token == "-" and (x[i - 1] in beforeMinus)):
+                if token == "-" and (x[i - 1] in beforeMinus):
                     lastToken = token
                     continue
 
@@ -152,5 +155,6 @@ class Main:
         print("lexical errors")
         print(self._errors)
 
-m =Main("error.in", "token.in")
+
+m = Main("problem1.", "token.in")
 m.scan()

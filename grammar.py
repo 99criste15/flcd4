@@ -1,3 +1,6 @@
+from anytree import Node, RenderTree
+
+
 class Grammar:
 
     def printProductions(self):
@@ -27,8 +30,14 @@ class Grammar:
         self._E = lines[1].split("\n")[0].split(" ")
         self._S = lines[2].split("\n")[0]
         self._table = {}
-
+        self._ll1Table = [[[] for _ in range(len(self._E) + 1)] for _ in range(len(self._N) + 1)]
+        self._first = {}
+        self._follow = {}
+        self._pathFirst = {}
+        self._isLL1 = True
         for line in lines[3:]:
+            line = line.split("\n")[0]
+            line = line.replace("bar", "|")
             line = line.split("->")
             rhs = line[1].split("|")
             listOfLists = []
@@ -36,6 +45,19 @@ class Grammar:
                 production = production.split(" ")
                 listOfLists.append(production)
             self._table[line[0]] = listOfLists
+        for nonterminal in reversed(self._N):
+            self._follow[nonterminal] = []
+            self._first[nonterminal] = self.first(nonterminal)
+
+
+        self.follow()
+
+        for i in range(len(self._N)):
+            nont = self._N[i]
+            for j in range(len(self._E)):
+                symbol = self._E[j]
+                if (nont, symbol) in self._pathFirst:
+                    self._ll1Table[i][j].append(self._pathFirst[(nont, symbol)])
 
     @staticmethod
     def printState(list):
@@ -45,6 +67,36 @@ class Grammar:
         x += "}"
         return x
 
+    def first(self, nonterminal):
+
+        if nonterminal == "factor":
+            print("ha")
+        if nonterminal in self._first:
+            return self._first[nonterminal]
+        result = []
+        prods = self._table[nonterminal]
+        for prod in prods:
+
+            if (prod[0] in self._E or prod[0] == 'Îµ') and prod[0] not in result:
+                result.append(prod[0])
+                if (nonterminal, prod[0]) in self._pathFirst:
+                    self._isLL1 = False
+                self._pathFirst[(nonterminal, prod[0])] = prod
+            if prod[0] in self._N:
+
+                if prod[0] in self._first:
+                    x = self._first[prod[0]]
+                else:
+                    x = self.first(prod[0])
+                    self._first[prod[0]] = x
+                for ii in range(len(x)):
+                    res = x[ii]
+                    if (nonterminal, res) in self._pathFirst:
+                        self._isLL1 = False
+                    if res not in result:
+                        result.append(res)
+                        self._pathFirst[(nonterminal, res)] = prod
+        return result
 
     def main(self):
         option = -1
@@ -68,15 +120,101 @@ class Grammar:
             elif option == 5:
                 print("S = " + self._S)
 
-
-
     def printProductionsForNonTerminal(self):
         nonTerminal = input("give a nonterminal\n")
         if nonTerminal in self._N:
             return self.printNonTerminalProductions(nonTerminal)
         return ""
 
+    def checkIfIsLL1(self):
 
-main = Grammar("grammar.in")
+        return self._isLL1
+
+    def parseSeq(self, seq):
+        listStack = [self._S]
+        outputTree = [Node("S")]
+        if self._isLL1:
+            while len(seq) != 0:
+                if listStack[0] in self._N:
+                    currentSymbol = listStack.pop(0)
+                    if (currentSymbol, seq[0]) in self._pathFirst:
+                        for item in self._pathFirst[(currentSymbol, seq[0])]:
+                            listStack.append(item)
+                            outputTree.append(Node(item, parentNode=currentSymbol))
+                    else:
+                        return False
+                elif listStack[0] == seq[0]:
+                    listStack.pop(0)
+                    seq = seq[1:]
+                else:
+                    return False
+                if len(listStack) == 0:
+                    return False
+            if len(listStack) != 0:
+                return False
+            return outputTree
+        return False
+
+    def follow(self):
+        self._follow[self._S] = ["$"]
+        refFollows = []
+        for nont in self._table:
+            for production in self._table[nont]:
+                for i in range(len(production)):
+                    if production[i] in self._N:
+                        if i + 1 < len(production):
+                            if production[i + 1] in self._E and production[i + 1] != 'Îµ':
+                                if production[i + 1] not in self._follow[production[i]]:
+                                    self._follow[production[i]].append(production[i + 1])
+                            elif len(self._first[production[i + 1]]) > 1 or 'Îµ' not in self._first[production[i + 1]]:
+                                filtered = list(filter(lambda x: x != 'Îµ' and x not in self._follow[production[i]],
+                                                       self._first[production[i + 1]]))
+                                self._follow[production[i]].extend(filtered)
+                                if 'Îµ' in self._first[production[i + 1]]:
+                                    if production[i + 1] not in self._follow[production[i]]:
+                                        self._follow[production[i]].append(production[i + 1])
+                                        refFollows.append(production[i])
+                            else:
+                                if nont != production[i]:
+                                    if nont not in self._follow[production[i]]:
+                                        self._follow[production[i]].append(nont)
+                                    if production[i] not in refFollows:
+                                        refFollows.append(production[i])
+                        else:
+                            if nont != production[i]:
+                                if nont not in self._follow[production[i]]:
+                                    self._follow[production[i]].append(nont)
+                                if production[i] not in refFollows:
+                                    refFollows.append(production[i])
+
+        while len(refFollows) != 0:
+            for follow in self._follow:
+                ok = True
+                toBeDeleted = []
+                for item in self._follow[follow]:
+                    if item in self._N:
+                        if item not in refFollows:
+                            toBeDeleted.append(item)
+                            self._follow[follow].extend(self._follow[item])
+                        else:
+                            ok = False
+                for item in toBeDeleted:
+                    self._follow[follow].remove(item)
+                if ok and follow in refFollows:
+                    refFollows.remove(follow)
+        paths = list(self._pathFirst.keys())
+        for path in paths:
+            value = path[1]
+            key = path[0]
+            prod = self._pathFirst[path]
+            if value == 'Îµ':
+                del self._pathFirst[path]
+                followsSymbols = self._follow[key]
+                for symbol in followsSymbols:
+                    if symbol != "$":
+                        self._pathFirst[(key, symbol)] = prod
+
+
+main = Grammar("myGrammar.in")
+print(main.checkIfIsLL1())
 main.main()
-
