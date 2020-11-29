@@ -48,10 +48,18 @@ class Grammar:
         for nonterminal in reversed(self._N):
             self._follow[nonterminal] = []
             self._first[nonterminal] = self.first(nonterminal)
-
-
         self.follow()
-
+        paths = list(self._pathFirst.keys())
+        for path in paths:
+            value = path[1]
+            key = path[0]
+            prod = self._pathFirst[path]
+            if value == 'Îµ':
+                del self._pathFirst[path]
+                followsSymbols = self._follow[key]
+                for symbol in followsSymbols:
+                    if symbol != "$":
+                        self._pathFirst[(key, symbol)] = prod
         for i in range(len(self._N)):
             nont = self._N[i]
             for j in range(len(self._E)):
@@ -202,17 +210,7 @@ class Grammar:
                     self._follow[follow].remove(item)
                 if ok and follow in refFollows:
                     refFollows.remove(follow)
-        paths = list(self._pathFirst.keys())
-        for path in paths:
-            value = path[1]
-            key = path[0]
-            prod = self._pathFirst[path]
-            if value == 'Îµ':
-                del self._pathFirst[path]
-                followsSymbols = self._follow[key]
-                for symbol in followsSymbols:
-                    if symbol != "$":
-                        self._pathFirst[(key, symbol)] = prod
+
 
 
 main = Grammar("myGrammar.in")
