@@ -1,6 +1,7 @@
 import re
 import fa
 from grammar import *
+from anytree import Node, RenderTree
 
 
 class HashTable:
@@ -84,8 +85,10 @@ class Main:
         for line in self._d.readlines():
             self._tokens.append(line.split("#")[0])
         self._pif = []
+        self._parseTokens = []
         self._errors = []
         self._symbolTable = HashTable()
+        self.scan()
 
     def scan(self):
         lines = self._f.readlines()
@@ -143,9 +146,13 @@ class Main:
                 token = token.replace("#enter#", "\n")
                 if token.lower() in self._tokens:
                     self._pif.append((token, -1))
+                    self._parseTokens.append(token)
                 elif self._FaIdentifiers.isAccepted(token) or self._FaIntegers.isAccepted(token) or re.findall(
                         '^".*"$|^[-]?[0-9]\d*,\d*$|^0$|^\'.\'$', token):
+
                     self._pif.append((token, self._symbolTable.add(token)))
+                    for constant in token:
+                        self._parseTokens.append(constant)
                 else:
                     self._errors.append("Lexical error at line " + str(k) + " at token :" + token)
         print("symbol table:")
@@ -155,6 +162,19 @@ class Main:
         print("lexical errors")
         print(self._errors)
 
+    def checkIfAccepted(self):
+        grammar = Grammar("myGrammar.in")
+        parsingTable = grammar.parseSeq(self._parseTokens)
+        if len(parsingTable) == 0:
+            print("the sequence is not Accepted")
+        else :
 
-m = Main("problem1.", "token.in")
-m.scan()
+            print(RenderTree(parsingTable[0]))
+            print(RenderTree(parsingTable[0]).childiter)
+
+
+
+
+m = Main("problem1.in", "token.in")
+# m.scan()
+m.checkIfAccepted()

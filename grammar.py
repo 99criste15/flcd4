@@ -1,5 +1,5 @@
 from anytree import Node, RenderTree
-
+from copy import deepcopy
 
 class Grammar:
 
@@ -28,6 +28,9 @@ class Grammar:
         lines = f.readlines()
         self._N = lines[0].split("\n")[0].split(" ")
         self._E = lines[1].split("\n")[0].split(" ")
+        if "@space@" in self._E:
+            self._E.append(' ')
+            self._E.remove("@space@")
         self._S = lines[2].split("\n")[0]
         self._table = {}
         self._ll1Table = [[[] for _ in range(len(self._E) + 1)] for _ in range(len(self._N) + 1)]
@@ -38,11 +41,15 @@ class Grammar:
         for line in lines[3:]:
             line = line.split("\n")[0]
             line = line.replace("bar", "|")
+
             line = line.split("->")
             rhs = line[1].split("|")
             listOfLists = []
             for production in rhs:
                 production = production.split(" ")
+                for i in range(len(production)):
+                    if production[i] == "@space@":
+                        production[i] = " "
                 listOfLists.append(production)
             self._table[line[0]] = listOfLists
         for nonterminal in reversed(self._N):
@@ -143,25 +150,34 @@ class Grammar:
         outputTree = [Node("S")]
         if self._isLL1:
             while len(seq) != 0:
+                if len(listStack) == 0:
+                    return []
+                if listStack[0] == "if":
+                    print("sgd")
                 if listStack[0] in self._N:
+
                     currentSymbol = listStack.pop(0)
                     if (currentSymbol, seq[0]) in self._pathFirst:
+                        listStack2 = deepcopy(self._pathFirst[(currentSymbol, seq[0])])
+                        listStack2.extend(listStack)
+                        listStack = listStack2
                         for item in self._pathFirst[(currentSymbol, seq[0])]:
-                            listStack.append(item)
+
                             outputTree.append(Node(item, parentNode=currentSymbol))
                     else:
-                        return False
+                        return []
+                elif listStack[0] == 'Îµ':
+                    listStack.pop(0)
                 elif listStack[0] == seq[0]:
                     listStack.pop(0)
                     seq = seq[1:]
                 else:
-                    return False
-                if len(listStack) == 0:
-                    return False
+                    return []
+
             if len(listStack) != 0:
-                return False
+                return []
             return outputTree
-        return False
+        return []
 
     def follow(self):
         self._follow[self._S] = ["$"]
@@ -212,7 +228,3 @@ class Grammar:
                     refFollows.remove(follow)
 
 
-
-main = Grammar("myGrammar.in")
-print(main.checkIfIsLL1())
-main.main()
