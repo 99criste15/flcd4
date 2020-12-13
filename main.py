@@ -1,8 +1,6 @@
 import re
 import fa
 from grammar import *
-from anytree import Node, RenderTree
-
 
 class HashTable:
 
@@ -169,7 +167,7 @@ class Main:
             print("the sequence is not Accepted")
         else :
             output = ParserOutput(parsingTable)
-            output.printToScreen()
+            output.printToFile()
 
 
 

@@ -84,8 +84,6 @@ class Grammar:
 
     def first(self, nonterminal):
 
-        if nonterminal == "factor":
-            print("ha")
         if nonterminal in self._first:
             return self._first[nonterminal]
         result = []
@@ -271,3 +269,11 @@ class ParserOutput:
             parent = self._table[key].parent if self._table[key].parent is not None else "-"
             sibling = self._table[key].sibling if self._table[key].sibling is not None else "-"
             print(key+"\t"+parent+"\t"+sibling)
+
+    def printToFile(self, file="parserOut.out"):
+        f = open(file, "w")
+        for key in self._table:
+            parent = self._table[key].parent if self._table[key].parent is not None else "-"
+            sibling = self._table[key].sibling if self._table[key].sibling is not None else "-"
+            f.write(key+"\t"+parent+"\t"+sibling+"\n")
+        f.close()
