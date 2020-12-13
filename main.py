@@ -168,9 +168,8 @@ class Main:
         if len(parsingTable) == 0:
             print("the sequence is not Accepted")
         else :
-
-            print(RenderTree(parsingTable[0]))
-            print(RenderTree(parsingTable[0]).childiter)
+            output = ParserOutput(parsingTable)
+            output.printToScreen()
 
 
 

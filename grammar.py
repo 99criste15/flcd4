@@ -1,5 +1,5 @@
-from anytree import Node, RenderTree
 from copy import deepcopy
+
 
 class Grammar:
 
@@ -147,13 +147,12 @@ class Grammar:
 
     def parseSeq(self, seq):
         listStack = [self._S]
-        outputTree = [Node("S")]
+        outputTree = {}
+        outputTree["S"] = Node("S", None, None)
         if self._isLL1:
             while len(seq) != 0:
                 if len(listStack) == 0:
-                    return []
-                if listStack[0] == "if":
-                    print("sgd")
+                    return {}
                 if listStack[0] in self._N:
 
                     currentSymbol = listStack.pop(0)
@@ -161,23 +160,27 @@ class Grammar:
                         listStack2 = deepcopy(self._pathFirst[(currentSymbol, seq[0])])
                         listStack2.extend(listStack)
                         listStack = listStack2
-                        for item in self._pathFirst[(currentSymbol, seq[0])]:
+                        path = self._pathFirst[(currentSymbol, seq[0])]
+                        for i in range (len(path)):
+                            if i < len(path)-1:
+                                outputTree[path[i]] = Node(path[i], currentSymbol, path[i+1])
+                            else:
+                                outputTree[path[i]] = Node(path[i], currentSymbol, None)
 
-                            outputTree.append(Node(item, parentNode=currentSymbol))
                     else:
-                        return []
+                        return {}
                 elif listStack[0] == 'Îµ':
                     listStack.pop(0)
                 elif listStack[0] == seq[0]:
                     listStack.pop(0)
                     seq = seq[1:]
                 else:
-                    return []
+                    return {}
 
             if len(listStack) != 0:
-                return []
+                return {}
             return outputTree
-        return []
+        return {}
 
     def follow(self):
         self._follow[self._S] = ["$"]
@@ -228,3 +231,43 @@ class Grammar:
                     refFollows.remove(follow)
 
 
+class Node:
+    def __init__(self, id, parent, sibling):
+        self._id = id
+        self._parent = parent
+        self._sibling = sibling
+
+    @property
+    def parent(self):
+        return self._parent
+
+    @parent.setter
+    def parent(self, parent):
+        self._parent = parent
+
+    @property
+    def id(self):
+        return self._id
+
+    @id.setter
+    def id(self, id):
+        self._id = id
+
+    @property
+    def sibling(self):
+        return self._sibling
+
+    @sibling.setter
+    def sibling(self, sibling):
+        self._sibling = sibling
+
+
+class ParserOutput:
+    def __init__(self, table):
+        self._table = table
+
+    def printToScreen(self):
+        for key in self._table:
+            parent = self._table[key].parent if self._table[key].parent is not None else "-"
+            sibling = self._table[key].sibling if self._table[key].sibling is not None else "-"
+            print(key+"\t"+parent+"\t"+sibling)
