@@ -10,7 +10,6 @@ class HashTable:
         self._capacity = initial_size
         self._data = [""] * self._capacity
         self._size = 0
-        self._grammar = Grammar("myGrammar.in")
 
     # initial_hash_function
     # input : key - String
@@ -76,6 +75,8 @@ class HashTable:
 
 class Main:
     def __init__(self, file1, file2):
+
+        self._grammar = Grammar("grammar.in")
         self._f = open(file1, "r", encoding="utf8")
         self._d = open(file2, "r", encoding="utf8")
 
@@ -165,8 +166,7 @@ class Main:
         print(self._errors)
 
     def checkIfAccepted(self):
-        grammar = Grammar("myGrammar.in")
-        parsingTable = grammar.parseSeq(self._parseTokens)
+        parsingTable = self._grammar.parseSeq(self._parseTokens)
         if len(parsingTable) == 0:
             print("the sequence is not Accepted")
         else:
@@ -174,6 +174,6 @@ class Main:
             output.printToFile()
 
 
-m = Main("problem1.in", "token.in")
+m = Main("sequence.in", "token.in")
 # m.scan()
 m.checkIfAccepted()

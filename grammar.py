@@ -171,6 +171,9 @@ class Grammar:
                     seq = seq[1:]
                 else:
                     raise Exception(str(listStack[0]) + " from the stack is not matching the symbol: " + str(seq[0]))
+            while len(listStack)>0 and listStack[0] in self._N and (listStack[0], 'Îµ') in self._pathFirst:
+                listStack.pop(0)
+
             if len(listStack) != 0:
                 # return ["Invalid sequence (input stack is not empty on finish)"]
                 raise Exception("Incomplete sequence (input stack not empty on finish)")
