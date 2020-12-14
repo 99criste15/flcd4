@@ -145,40 +145,40 @@ class Grammar:
 
     def parseSeq(self, seq):
         listStack = [self._S]
-        outputTree = {}
-        outputTree["S"] = Node("S", None, None)
+        outputTree = []
+        outputTree.append(Node(self._S, None, None))
         if self._isLL1:
             while len(seq) != 0:
                 if len(listStack) == 0:
-                    return {}
+                    # return ["Incomplete sequence"]
+                    raise Exception("Invalid sequence (input stack is empty, but the sequence is not fully parsed)")
                 if listStack[0] in self._N:
-
                     currentSymbol = listStack.pop(0)
                     if (currentSymbol, seq[0]) in self._pathFirst:
                         listStack2 = deepcopy(self._pathFirst[(currentSymbol, seq[0])])
                         listStack2.extend(listStack)
                         listStack = listStack2
                         path = self._pathFirst[(currentSymbol, seq[0])]
-                        for i in range (len(path)):
-                            if i < len(path)-1:
-                                outputTree[path[i]] = Node(path[i], currentSymbol, path[i+1])
+                        for i in range(len(path)):
+                            if i < len(path) - 1:
+                                outputTree.append(Node(path[i], currentSymbol, path[i + 1]))
                             else:
-                                outputTree[path[i]] = Node(path[i], currentSymbol, None)
-
+                                outputTree.append(Node(path[i], currentSymbol, None))
                     else:
-                        return {}
+                        # return ["There is no path from " + str(currentSymbol) + " to " + seq[0]]
+                        raise Exception("There is no path from " + str(currentSymbol) + " to " + seq[0])
                 elif listStack[0] == 'Îµ':
                     listStack.pop(0)
                 elif listStack[0] == seq[0]:
                     listStack.pop(0)
                     seq = seq[1:]
                 else:
-                    return {}
-
+                    raise Exception(str(listStack[0]) + " from the stack is not matching the symbol: " + str(seq[0]))
             if len(listStack) != 0:
-                return {}
+                # return ["Invalid sequence (input stack is not empty on finish)"]
+                raise Exception("Incomplete sequence (input stack not empty on finish)")
             return outputTree
-        return {}
+        raise Exception("The grammar is not LL(1)")
 
     def follow(self):
         self._follow[self._S] = ["$"]
@@ -266,14 +266,16 @@ class ParserOutput:
 
     def printToScreen(self):
         for key in self._table:
-            parent = self._table[key].parent if self._table[key].parent is not None else "-"
-            sibling = self._table[key].sibling if self._table[key].sibling is not None else "-"
-            print(key+"\t"+parent+"\t"+sibling)
+            parent = key.parent if key.parent is not None else "-"
+            sibling = key.sibling if key.sibling is not None else "-"
+            print(key.id + "\t" + parent + "\t" + sibling)
 
     def printToFile(self, file="parserOut.out"):
         f = open(file, "w")
+        f.write("Symbol".ljust(20, " ") + "|" + "Parent".ljust(20, " ") + "|" + "Sibling".ljust(20, " ")+"\n")
         for key in self._table:
-            parent = self._table[key].parent if self._table[key].parent is not None else "-"
-            sibling = self._table[key].sibling if self._table[key].sibling is not None else "-"
-            f.write(key+"\t"+parent+"\t"+sibling+"\n")
+            parent = key.parent if key.parent is not None else "-"
+            sibling = key.sibling if key.sibling is not None else "-"
+            # f.write(key.id + "\t" + parent + "\t" + sibling + "\n")
+            f.write(str(key.id).ljust(20, " ") + "|" + parent.ljust(20, " ") + "|" + sibling.ljust(20, " ") + "\n")
         f.close()

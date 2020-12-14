@@ -17,44 +17,29 @@ for_stmt->for ( assign_stmt condition assign_stmt ) statements_block .
 return_stmt->return factor .
 expression_block->( expression )
 arrayIdentifier->[ mathematical_expression ]|ε
-expression->non_num_factor bool_bit_helper|~ factor|! boolean_expression|Number bool_bit_math_helper
+expression->non_num_factor bool_bit_helper|~ factor|! boolean_expression|constant bool_bit_math_helper
 bool_bit_helper->boolean_helper|bitwise_operator non_num_factor|ε
-bool_bit_math_helper->binary_logic_relation Number|comparison_operators Number|bitwise_operator Number|mathematical_operator Number|ε
+bool_bit_math_helper->binary_logic_relation constant|comparison_operators constant|bitwise_operator constant|mathematical_operator constant|ε
 condition->( boolean_expression condition_helper )
 condition_helper->binary_logic_relation boolean_expression|ε
 boolean_expression->factor boolean_helper|! boolean_expression|boolean_values
 boolean_helper->binary_logic_relation factor|comparison_operators factor
 bitwise_expression->factor bitwise_operator factor|~ factor
-mathematical_expression->Number mathematical_operator Number|ε
+mathematical_expression->factor mathematical_operator factor|ε
 factor->identifier arrayIdentifier|constant
-non_num_factor->identifier arrayIdentifier|text|boolean_values
 binary_logic_relation->&&|bar bar
 comparison_operators-><=|>=|>|<|==
 mathematical_operator->+|-|*|/|%
 bitwise_operator-><<|>>|bar|&
 identifier->letter symbols
-text->Char|string
-constant->Number|Char|string
 symbols->symbol symbols|ε
 symbol->letter|digit
-Char->' letterWithSpace '
-string->" lettersWithSpace "
-letterWithSpace->letter|@space@
-lettersWithSpace->letterWithSpace lettersWithSpace|ε
 letters->letter letters|ε
-Number->Int DoubleEnd
-DoubleEnd->, positiveInt|ε
-Int->sign unsignedInt|unsignedInt|0
-Double->sign unsignedDouble|0 , 0
-unsignedDouble->0 , unsignedInt|unsignedInt , positiveInt
 type->type1 array
 type1->int|char|double|boolean
-array->[ positiveInt ]|ε
-positiveInt->unsignedInt|0
-unsignedInt->positiveDigit digits
+array->[ constant ]|ε
 digits->digit digits|ε
 digit->0|positiveDigit
 positiveDigit->1|2|3|4|5|6|7|8|9
-boolean_values->true|false
 letter->a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|_
-sign->-|+|ε
+constant->const

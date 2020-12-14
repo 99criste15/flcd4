@@ -1,6 +1,8 @@
 import re
+
 import fa
 from grammar import *
+
 
 class HashTable:
 
@@ -149,8 +151,10 @@ class Main:
                         '^".*"$|^[-]?[0-9]\d*,\d*$|^0$|^\'.\'$', token):
 
                     self._pif.append((token, self._symbolTable.add(token)))
-                    for constant in token:
-                        self._parseTokens.append(constant)
+                    if self._FaIdentifiers.isAccepted(token):
+                        self._parseTokens.append(token)
+                    else:
+                        self._parseTokens.append("const")
                 else:
                     self._errors.append("Lexical error at line " + str(k) + " at token :" + token)
         print("symbol table:")
@@ -165,11 +169,9 @@ class Main:
         parsingTable = grammar.parseSeq(self._parseTokens)
         if len(parsingTable) == 0:
             print("the sequence is not Accepted")
-        else :
+        else:
             output = ParserOutput(parsingTable)
             output.printToFile()
-
-
 
 
 m = Main("problem1.in", "token.in")
