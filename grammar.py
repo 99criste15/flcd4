@@ -28,9 +28,6 @@ class Grammar:
         lines = f.readlines()
         self._N = lines[0].split("\n")[0].split(" ")
         self._E = lines[1].split("\n")[0].split(" ")
-        if "@space@" in self._E:
-            self._E.append(' ')
-            self._E.remove("@space@")
         self._S = lines[2].split("\n")[0]
         self._table = {}
         self._ll1Table = [[[] for _ in range(len(self._E) + 1)] for _ in range(len(self._N) + 1)]
