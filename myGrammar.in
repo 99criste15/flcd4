@@ -1,5 +1,5 @@
-Program statements_block stmt_list stmt assign_io_helper assign_stmt declaration_stmt declaration_helper IO_stmt if_stmt elseBlock while_stmt for_stmt return_stmt expression_block non_num_factor factor arrayIdentifier expression condition condition_helper bool_bit_helper bool_bit_math_helper boolean_expression boolean_helper bitwise_expression mathematical_expression binary_logic_relation comparison_operators mathematical_operator bitwise_operator identifier constant text Number DoubleEnd symbols symbol Char string lettersWithSpace letterWithSpace letters Int Double unsignedDouble type type1 array positiveInt unsignedInt digits digit positiveDigit boolean_values letter sign
-main ( ) . , boolean int double char [ ] { } = for while else if ~ && || + - / * == <= >= > < true false << >> | % & ! readLine writeLine " ' return 0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ , @space@
+Program statements_block stmt_list stmt assign_io_helper assign_stmt declaration_stmt declaration_helper IO_stmt if_stmt elseBlock while_stmt for_stmt return_stmt expression_block factor expression condition condition_helper expression_helper boolean_expression boolean_helper bitwise_expression bitwise_helper mathematical_expression mathematical_helper binary_logic_relation comparison_operators mathematical_operator bitwise_operator identifier constant symbols symbol letters type type1 array digits digit positiveDigit letter
+main ( ) . , boolean int double char [ ] { } = for while else if ~ && || + - / * == <= >= > < true false << >> | % & ! readLine writeLine " ' return 0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ , const
 Program
 Program->type main ( ) statements_block .
 statements_block->{ stmt_list }
@@ -14,47 +14,31 @@ if_stmt->if condition statements_block elseBlock
 elseBlock->else statements_block .|.
 while_stmt->while condition statements_block .
 for_stmt->for ( assign_stmt condition assign_stmt ) statements_block .
-return_stmt->return factor .
+return_stmt->return constant .
 expression_block->( expression )
-arrayIdentifier->[ mathematical_expression ]|ε
-expression->non_num_factor bool_bit_helper|~ factor|! boolean_expression|Number bool_bit_math_helper
-bool_bit_helper->boolean_helper|bitwise_operator non_num_factor|ε
-bool_bit_math_helper->binary_logic_relation Number|comparison_operators Number|bitwise_operator Number|mathematical_operator Number|ε
+expression->factor expression_helper|~ factor|! boolean_expression
+expression_helper->boolean_helper|bitwise_helper|mathematical_helper|ε
 condition->( boolean_expression condition_helper )
 condition_helper->binary_logic_relation boolean_expression|ε
-boolean_expression->factor boolean_helper|! boolean_expression|boolean_values
-boolean_helper->binary_logic_relation factor|comparison_operators factor
-bitwise_expression->factor bitwise_operator factor|~ factor
-mathematical_expression->Number mathematical_operator Number|ε
-factor->identifier arrayIdentifier|constant
-non_num_factor->identifier arrayIdentifier|text|boolean_values
+boolean_expression->factor boolean_helper|! boolean_expression
+boolean_helper->binary_logic_relation factor|comparison_operators factor|ε
+bitwise_expression->factor bitwise_helper|~ factor
+bitwise_helper->bitwise_operator factor
+mathematical_expression->factor mathematical_helper|ε
+mathematical_helper->mathematical_operator factor
+factor->identifier array|constant
 binary_logic_relation->&&|bar bar
 comparison_operators-><=|>=|>|<|==
 mathematical_operator->+|-|*|/|%
 bitwise_operator-><<|>>|bar|&
 identifier->letter symbols
-text->Char|string
-constant->Number|Char|string
 symbols->symbol symbols|ε
 symbol->letter|digit
-Char->' letterWithSpace '
-string->" lettersWithSpace "
-letterWithSpace->letter|@space@
-lettersWithSpace->letterWithSpace lettersWithSpace|ε
 letters->letter letters|ε
-Number->Int DoubleEnd
-DoubleEnd->, positiveInt|ε
-Int->sign unsignedInt|unsignedInt|0
-Double->sign unsignedDouble|0 , 0
-unsignedDouble->0 , unsignedInt|unsignedInt , positiveInt
 type->type1 array
 type1->int|char|double|boolean
-array->[ positiveInt ]|ε
-positiveInt->unsignedInt|0
-unsignedInt->positiveDigit digits
+array->[ constant ]|ε
 digits->digit digits|ε
-digit->0|positiveDigit
-positiveDigit->1|2|3|4|5|6|7|8|9
-boolean_values->true|false
+digit->0|1|2|3|4|5|6|7|8|9
 letter->a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z|A|B|C|D|E|F|G|H|I|J|K|L|M|N|O|P|Q|R|S|T|U|V|W|X|Y|Z|_
-sign->-|+|ε
+constant->const
