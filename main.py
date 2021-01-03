@@ -76,7 +76,7 @@ class HashTable:
 class Main:
     def __init__(self, file1, file2):
 
-        self._grammar = Grammar("grammar.in")
+        self._grammar = Grammar("myGrammar.in")
         self._f = open(file1, "r", encoding="utf8")
         self._d = open(file2, "r", encoding="utf8")
 
@@ -174,6 +174,6 @@ class Main:
             output.printToFile()
 
 
-m = Main("sequence.in", "token.in")
+m = Main("problem1.in", "token.in")
 # m.scan()
 m.checkIfAccepted()

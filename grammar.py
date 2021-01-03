@@ -59,7 +59,7 @@ class Grammar:
             key = path[0]
             prod = self._pathFirst[path]
             if value == 'Îµ':
-                del self._pathFirst[path]
+                #del self._pathFirst[path]
                 followsSymbols = self._follow[key]
                 for symbol in followsSymbols:
                     if symbol != "$":
@@ -81,6 +81,8 @@ class Grammar:
 
     def first(self, nonterminal):
 
+        if nonterminal == "T'":
+            print("g")
         if nonterminal in self._first:
             return self._first[nonterminal]
         result = []
@@ -147,7 +149,6 @@ class Grammar:
         if self._isLL1:
             while len(seq) != 0:
                 if len(listStack) == 0:
-                    # return ["Incomplete sequence"]
                     raise Exception("Invalid sequence (input stack is empty, but the sequence is not fully parsed)")
                 if listStack[0] in self._N:
                     currentSymbol = listStack.pop(0)
