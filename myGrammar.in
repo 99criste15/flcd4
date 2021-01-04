@@ -1,7 +1,7 @@
 Program statements_block stmt_list stmt assign_io_helper assign_stmt declaration_stmt declaration_helper IO_stmt if_stmt elseBlock while_stmt for_stmt return_stmt expression_block factor expression condition condition_helper expression_helper boolean_expression boolean_helper bitwise_expression bitwise_helper mathematical_expression mathematical_helper binary_logic_relation comparison_operators mathematical_operator bitwise_operator identifier constant symbols symbol letters type type1 array digits digit letter
 main ( ) . , boolean int double char [ ] { } = for while else if ~ && || + - / * == <= >= > < true false << >> | % & ! readLine writeLine " ' return 0 1 2 3 4 5 6 7 8 9 a b c d e f g h i j k l m n o p q r s t u v w x y z A B C D E F G H I J K L M N O P Q R S T U V W X Y Z _ , const
 Program
-Program->type main ( ) statements_block .
+Program->type main ( ) statements_block
 statements_block->{ stmt_list }
 stmt_list->stmt stmt_list|ε
 stmt->identifier = assign_io_helper|writeLine expression_block .|declaration_stmt|if_stmt|while_stmt|for_stmt|return_stmt
